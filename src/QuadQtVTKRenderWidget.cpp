@@ -6,7 +6,6 @@
 #include <QWidget>
 
 #include <vtkCellPicker.h>
-#include <vtkDistanceWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageMapToColors.h>
 #include <vtkImagePlaneWidget.h>
@@ -19,8 +18,6 @@
 #include <vtkResliceCursorPolyDataAlgorithm.h>
 #include <vtkResliceCursorWidget.h>
 #include <vtkResliceImageViewer.h>
-#include <vtkResliceImageViewerMeasurements.h>
-
 #include "vtkResliceCursorCallback.h"
 
 QuadQtVTKRenderWidget::QuadQtVTKRenderWidget(QWidget* parent) :

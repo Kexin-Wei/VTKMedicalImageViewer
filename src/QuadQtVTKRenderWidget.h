@@ -4,6 +4,7 @@
 
 #include <QFileInfo>
 #include <QWidget>
+#include <array>
 #include <vtkSmartPointer.h>
 class vtkDistanceWidget;
 class vtkImagePlaneWidget;
@@ -25,9 +26,10 @@ public:
 
 protected:
     QList<QVTKOpenGLNativeWidget*> m_vtkWidgets = { nullptr, nullptr, nullptr, nullptr };
-    vtkSmartPointer<vtkResliceImageViewer> m_riw[3];
-    vtkSmartPointer<vtkImagePlaneWidget> m_planeWidget[3];
-    vtkSmartPointer<vtkDistanceWidget> m_distanceWidget[3];
+    std::array<vtkSmartPointer<vtkResliceImageViewer>, 3> m_riw;
+    std::array<vtkSmartPointer<vtkImagePlaneWidget>, 3> m_planeWidget;
+    std::array<vtkSmartPointer<vtkDistanceWidget>, 3> m_distanceWidget;
+
     vtkSmartPointer<vtkResliceImageViewerMeasurements> m_resliceMeasurements;
 
     vtkSmartPointer<vtkNrrdReader> m_reader;

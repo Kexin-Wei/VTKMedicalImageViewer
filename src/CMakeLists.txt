@@ -13,7 +13,14 @@ find_package(libs REQUIRED)
 find_package(VTK COMPONENTS
         vtkCommonCore
         vtkViewsQt
+        vtkRenderingCore
+        vtkRenderingOpenGL2
+        vtkGUISupportQt
+        vtkIOImage
+        vtkImagingGeneral
         vtkInteractionImage
+        vtkInteractionStyle
+        vtkInteractionWidgets
 )
 find_package(Qt5 REQUIRED COMPONENTS
         Core
