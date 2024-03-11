@@ -10,18 +10,17 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(libs REQUIRED)
-find_package(VTK COMPONENTS
+find_package(VTK REQUIRED COMPONENTS
         vtkCommonCore
         vtkViewsQt
         vtkRenderingCore
+        vtkRenderingImage
         vtkRenderingOpenGL2
-        vtkGUISupportQt
-        vtkIOImage
-        vtkImagingGeneral
         vtkInteractionImage
         vtkInteractionStyle
-        vtkInteractionWidgets
+        vtkIOGeometry
 )
+include(${VTK_USE_FILE})
 find_package(Qt5 REQUIRED COMPONENTS
         Core
         Widgets
@@ -31,11 +30,13 @@ find_package(Qt5 REQUIRED COMPONENTS
 set(${LIBARY_TARGET_NAME}_SOURCES
         vtkResliceCursorCallback.cpp
         QuadQtVTKRenderWidget.cpp
+        VTKOpenGLWidget.cpp
 )
 
 set(${LIBARY_TARGET_NAME}_HEADERS
         vtkResliceCursorCallback.h
         QuadQtVTKRenderWidget.h
+        VTKOpenGLWidget.h
 )
 
 set(QT_LIBRARIES
