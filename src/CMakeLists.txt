@@ -22,6 +22,7 @@ find_package(VTK COMPONENTS
         vtkInteractionStyle
         vtkInteractionWidgets
 )
+include(${VTK_USE_FILE})
 find_package(Qt5 REQUIRED COMPONENTS
         Core
         Widgets

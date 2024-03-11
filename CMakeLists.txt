@@ -46,5 +46,6 @@ FIND_PROGRAM(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E
         env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+        --verbose 0
         --dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" $<TARGET_FILE:${PROJECT_NAME}>
 )

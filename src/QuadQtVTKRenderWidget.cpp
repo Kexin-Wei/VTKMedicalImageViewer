@@ -28,11 +28,12 @@ QuadQtVTKRenderWidget::QuadQtVTKRenderWidget(QWidget* parent) :
 
     m_reader = vtkSmartPointer<vtkNrrdReader>::New();
     m_reader->SetFileName("D:/Medical Image - Example/Real-Patient-Data/Patient H/MR_t2_tse_tra_p2-4mm-wwp_FIL.nrrd");
+    m_reader->Update();
 
     QGridLayout* gridLayout = new QGridLayout(this);
-    for (auto vtkWidget : m_vtkWidgets)
+    for (int i = 0; i < 4; i++)
     {
-        vtkWidget = new QVTKOpenGLNativeWidget(this);
+        m_vtkWidgets[i] = new QVTKOpenGLNativeWidget(this);
     }
     gridLayout->addWidget(m_vtkWidgets[0], 0, 0, 1, 1);
     gridLayout->addWidget(m_vtkWidgets[1], 1, 0, 1, 1);
@@ -51,7 +52,7 @@ QuadQtVTKRenderWidget::QuadQtVTKRenderWidget(QWidget* parent) :
         m_riw[i]->SetResliceCursor(m_riw[0]->GetResliceCursor());
         rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
 
-        m_riw[i]->SetInputConnection(m_reader->GetOutputPort());
+        m_riw[i]->SetInputData(m_reader->GetOutput());
         m_riw[i]->SetResliceModeToAxisAligned();
     }
 
