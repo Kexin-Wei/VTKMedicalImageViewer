@@ -1,27 +1,30 @@
 #include "VTKOpenGLWidget.h"
+
+#include <QDebug>
+
+#include <vtkActor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkNrrdReader.h>
+#include <vtkImageData.h>
+#include <vtkImageProperty.h>
 #include <vtkImageReslice.h>
+#include <vtkImageResliceMapper.h>
 #include <vtkImageSlice.h>
 #include <vtkImageSliceMapper.h>
+#include <vtkNrrdReader.h>
 #include <vtkOutlineFilter.h>
-#include <vtkTransform.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkImageResliceMapper.h>
-#include <vtkImageProperty.h>
-#include <vtkImageData.h>
 #include <vtkPlane.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 #include <vtkTransformFilter.h>
 #include <vtkTransformPolyDataFilter.h>
 
-VTKOpenGLWidget::VTKOpenGLWidget(QWidget* parent)
-    : QVTKOpenGLNativeWidget(parent)
-    , m_renderWindow(vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New())
-    , m_leftRenderer(vtkSmartPointer<vtkRenderer>::New())
-    , m_rightRenderer(vtkSmartPointer<vtkRenderer>::New())
-    , m_origin{50, 50, 0}
+VTKOpenGLWidget::VTKOpenGLWidget(QWidget* parent) :
+    QVTKOpenGLNativeWidget(parent),
+    m_renderWindow(vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New()),
+    m_leftRenderer(vtkSmartPointer<vtkRenderer>::New()),
+    m_rightRenderer(vtkSmartPointer<vtkRenderer>::New()),
+    m_origin { 50, 50, 0 }
 {
     initialize();
     createTestData();
@@ -29,7 +32,6 @@ VTKOpenGLWidget::VTKOpenGLWidget(QWidget* parent)
 
 VTKOpenGLWidget::~VTKOpenGLWidget()
 {
-
 }
 
 void VTKOpenGLWidget::initialize()
@@ -56,11 +58,14 @@ void VTKOpenGLWidget::createLeftRenderData()
 
     vtkNew<vtkImageResliceMapper> imageResliceMapper;
     imageResliceMapper->SetInputConnection(reader->GetOutputPort());
+
+    reader->Update();
     auto imageCenter = reader->GetOutput()->GetCenter();
-    double normalZ[] = {0,0,1};
+    double normalZ[] = { 0, 0, 1 };
     auto plane = vtkSmartPointer<vtkPlane>::New();
     plane->SetOrigin(imageCenter);
     plane->SetNormal(normalZ);
+
     imageResliceMapper->SetSlicePlane(plane);
 
     vtkNew<vtkImageSlice> imageSlice;
@@ -76,11 +81,17 @@ void VTKOpenGLWidget::createRightRenderData()
 
     vtkNew<vtkImageResliceMapper> imageResliceMapper;
     imageResliceMapper->SetInputConnection(reader->GetOutputPort());
+
+    reader->Update();
     auto imageCenter = reader->GetOutput()->GetCenter();
-    double normalZ[] = {0,0,1};
+    qDebug() << imageCenter[0] << imageCenter[1] << imageCenter[2];
+    double normalZ[] = { 0, 0, 1 };
     auto plane = vtkSmartPointer<vtkPlane>::New();
     plane->SetOrigin(imageCenter);
     plane->SetNormal(normalZ);
+
+    double newLoc[] = { imageCenter[0], imageCenter[1], imageCenter[2] + 10 };
+    plane->SetOrigin(newLoc);
     imageResliceMapper->SetSlicePlane(plane);
 
     vtkNew<vtkImageSlice> imageSlice;
