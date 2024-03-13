@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(libs_DIR "D:/UltrastRepos/libs/")
-set(Qt5_DIR "C:/Qt/Qt5.12.10/5.12.10/msvc2015_64/lib/cmake/Qt5")
+if (MSVC)
+    set(libs_DIR "D:/UltrastRepos/libs/")
+    set(Qt5_DIR "C:/Qt/Qt5.12.10/5.12.10/msvc2015_64/lib/cmake/Qt5")
+else ()
+    set(libs_DIR "/Users/kexinwei/GitRepos/libs/")
+    set(Qt5_DIR "/Users/kexinwei/Qt/5.15.2/wasm_32/lib/cmake/Qt5")
+endif ()
 
 project(TestVTKViewer)
 
@@ -43,9 +48,11 @@ GET_TARGET_PROPERTY(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
 GET_FILENAME_COMPONENT(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 FIND_PROGRAM(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
+if (MSVC)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E
         env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
         --verbose 0
         --dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" $<TARGET_FILE:${PROJECT_NAME}>
 )
+endif ()
