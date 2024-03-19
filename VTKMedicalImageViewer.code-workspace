@@ -5,10 +5,11 @@
 		}
 	],
 	"settings": {
-		"C_Cpp.clang_format_style": "file:.clang-format",
+		"C_Cpp.clang_format_style": "file:${workspaceFolder}/.clang-format",
 		"cmake.configureArgs": [
 			"-Dlibs_DIR=D:/UltrastRepos/libs"
 		],
-		"C_Cpp.clang_format_fallbackStyle": "file"
+		"C_Cpp.clang_format_fallbackStyle": "LLVM",
+		"editor.formatOnSave": true
 	}
 }
