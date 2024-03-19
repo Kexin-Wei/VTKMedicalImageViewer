@@ -1,10 +1,25 @@
 #pragma once
 
 #include <QVTKOpenGLNativeWidget.h>
+#include <vtkInteractorStyleImage.h>
 #include <vtkSmartPointer.h>
 
 class vtkGenericOpenGLRenderWindow;
 class vtkRenderer;
+
+class SliceViewerInteractorStyle : public vtkInteractorStyleImage
+{
+public:
+static SliceViewerInteractorStyle* New();
+    ~SliceViewerInteractorStyle();
+    void OnMouseMove() override;
+    void OnLeftButtonDown() override;
+
+private:
+    SliceViewerInteractorStyle();
+    vtkRenderer* m_renderer;
+    vtkRenderWindow* m_renderWindow;
+};
 
 class VTKOpenGLWidget : public QVTKOpenGLNativeWidget
 {
@@ -14,12 +29,14 @@ public:
 
 private:
     void initialize();
-    void createTestData();
-    void createLeftRenderData();
-    void createRightRenderData();
+    void setUpImages();
+    void createFirsImageRenderData();
+    void createSecondImageRenderData();
 
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> m_renderWindow;
-    vtkSmartPointer<vtkRenderer> m_leftRenderer;
+   std::vector< vtkSmartPointer<vtkRenderer>> m_upperRenderer;
     vtkSmartPointer<vtkRenderer> m_rightRenderer;
-    double m_origin[3];
+    vtkSmartPointer<vtkRenderer> m_leftRenderer;
+
+    double m_cursor[3];
 };

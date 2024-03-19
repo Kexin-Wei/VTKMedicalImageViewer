@@ -15,7 +15,9 @@ find_package(VTK REQUIRED COMPONENTS
         vtkViewsQt
         vtkRenderingCore
         vtkRenderingImage
+        vtkRenderingFreeType
         vtkRenderingOpenGL2
+        vtkRenderingVolumeOpenGL2
         vtkInteractionImage
         vtkInteractionStyle
         vtkIOGeometry

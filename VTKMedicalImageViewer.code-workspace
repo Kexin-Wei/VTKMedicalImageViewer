@@ -4,5 +4,11 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"C_Cpp.clang_format_style": "file:.clang-format",
+		"cmake.configureArgs": [
+			"-Dlibs_DIR=D:/UltrastRepos/libs"
+		],
+		"C_Cpp.clang_format_fallbackStyle": "file"
+	}
 }

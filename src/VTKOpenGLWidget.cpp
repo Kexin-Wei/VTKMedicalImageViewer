@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include <vtkActor.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
 #include <vtkImageProperty.h>
@@ -19,15 +20,45 @@
 #include <vtkTransformFilter.h>
 #include <vtkTransformPolyDataFilter.h>
 
+SliceViewerInteractorStyle* SliceViewerInteractorStyle::New()
+{
+    return new SliceViewerInteractorStyle;
+}
+
+SliceViewerInteractorStyle::SliceViewerInteractorStyle():
+vtkInteractorStyleImage(),
+    m_renderer(nullptr),
+    m_renderWindow(nullptr)
+{
+}
+
+SliceViewerInteractorStyle::~SliceViewerInteractorStyle()
+{
+}
+
+void SliceViewerInteractorStyle::OnMouseMove()
+{
+    qDebug() << "Mouse move";
+    int x, y;
+    GetInteractor()->GetEventPosition(x, y);
+    qDebug() << "Mouse move at " << x << " " << y;
+}
+
+void SliceViewerInteractorStyle::OnLeftButtonDown()
+{
+    int x, y;
+    GetInteractor()->GetEventPosition(x, y);
+    qDebug() << "Left button down at " << x << " " << y;
+}
+
 VTKOpenGLWidget::VTKOpenGLWidget(QWidget* parent) :
     QVTKOpenGLNativeWidget(parent),
     m_renderWindow(vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New()),
-    m_leftRenderer(vtkSmartPointer<vtkRenderer>::New()),
-    m_rightRenderer(vtkSmartPointer<vtkRenderer>::New()),
-    m_origin { 50, 50, 0 }
+    m_cursor { 0, 0, 0 }
 {
+    resize(1800, 900);
     initialize();
-    createTestData();
+    setUpImages();
 }
 
 VTKOpenGLWidget::~VTKOpenGLWidget()
@@ -36,22 +67,56 @@ VTKOpenGLWidget::~VTKOpenGLWidget()
 
 void VTKOpenGLWidget::initialize()
 {
-    m_renderWindow->AddRenderer(m_leftRenderer);
-    m_leftRenderer->SetBackground(0.5, 0.5, 0.5);
-    m_leftRenderer->SetViewport(0, 0, 0.5, 1);
-    m_renderWindow->AddRenderer(m_rightRenderer);
-    m_rightRenderer->SetBackground(0, 1.0, 0);
-    m_rightRenderer->SetViewport(0.5, 0, 1, 1);
+
+    // auto style = SliceViewerInteractorStyle::New();
+    // style->SetInteractor(interactor);
+    vtkSmartPointer<vtkNrrdReader> firstReader = vtkSmartPointer<vtkNrrdReader>::New();
+    firstReader->SetFileName("D:/MRI.nrrd");
+    firstReader->Update();
+    auto firstCenter = firstReader->GetOutput()->GetCenter();
+    for (int i=0;i<3;i++)
+    {
+       double color[] = {0, 0, 0};
+       color[i] = 1;
+       m_upperRenderer[i] = vtkSmartPointer<vtkRenderer>::New();
+       m_upperRenderer[i]->SetBackground(color);   
+
+       vtkSmartPointer<vtkImageResliceMapper> imageResliceMapper = vtkSmartPointer<vtkImageResliceMapper>::New();
+       imageResliceMapper->SetInputConnection(firstReader->GetOutputPort());
+
+         vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
+            plane->SetOrigin(firstCenter);
+            double normal[] = {0, 0, 0};
+            normal[i] = 1;
+            plane->SetNormal(normal);
+            imageResliceMapper->SetSlicePlane(plane);
+            vtkSmartPointer<vtkImageSlice> imageSlice = vtkSmartPointer<vtkImageSlice>::New();
+            imageSlice->SetMapper(imageResliceMapper);
+            m_upperRenderer[i]->AddActor(imageSlice);
+
+            m_renderWindow->AddRenderer(m_upperRenderer[i]);
+    }
+
+    m_upperRenderer[0]->SetViewport(0, 0, 0.33, 0.5);
+    m_upperRenderer[1]->SetViewport(0.33, 0, 0.66, 0.5);
+    m_upperRenderer[2]->SetViewport(0.66, 0, 1, 0.5);
+    // m_renderWindow->AddRenderer(m_upperRenderer);
+    // m_upperRenderer->SetBackground(0.5, 0.5, 0.5);
+    // m_upperRenderer->SetViewport(0, 0, 0.5, 1);
+
+    // m_renderWindow->AddRenderer(m_rightRenderer);
+    // m_rightRenderer->SetBackground(0, 1.0, 0);
+    // m_rightRenderer->SetViewport(0.5, 0, 1, 1);
     SetRenderWindow(m_renderWindow);
 }
 
-void VTKOpenGLWidget::createTestData()
+void VTKOpenGLWidget::setUpImages()
 {
-    createLeftRenderData();
-    createRightRenderData();
+    createFirsImageRenderData();
+    // createSecondImageRenderData();
 }
 
-void VTKOpenGLWidget::createLeftRenderData()
+void VTKOpenGLWidget::createFirsImageRenderData()
 {
     vtkNew<vtkNrrdReader> reader;
     reader->SetFileName("D:/MRI.nrrd");
@@ -59,8 +124,8 @@ void VTKOpenGLWidget::createLeftRenderData()
     vtkNew<vtkImageResliceMapper> imageResliceMapper;
     imageResliceMapper->SetInputConnection(reader->GetOutputPort());
 
-    reader->Update();
     auto imageCenter = reader->GetOutput()->GetCenter();
+    qDebug() << imageCenter[0] << imageCenter[1] << imageCenter[2];
     double normalZ[] = { 0, 0, 1 };
     auto plane = vtkSmartPointer<vtkPlane>::New();
     plane->SetOrigin(imageCenter);
@@ -74,7 +139,7 @@ void VTKOpenGLWidget::createLeftRenderData()
     this->m_leftRenderer->AddActor(imageSlice);
 }
 
-void VTKOpenGLWidget::createRightRenderData()
+void VTKOpenGLWidget::createSecondImageRenderData()
 {
     vtkNew<vtkNrrdReader> reader;
     reader->SetFileName("D:/MRI.nrrd");
