@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include <vtkActor.h>
+#include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageCast.h>
 #include <vtkImageData.h>
@@ -59,9 +60,13 @@ VTKOpenGLWidget::VTKOpenGLWidget(QWidget* parent) :
     m_cursor { 0, 0, 0 }
 {
     m_normals = { { 0, { 0, 0, 1 } }, { 1, { 0, 1, 0 } }, { 2, { 1, 0, 0 } } };
+    m_viewUps = { { 0, { 0, 1, 0 } }, { 1, { 0, 1, 0 } }, { 2, { 1, 0, 0 } } };
     m_firstTransform = vtkSmartPointer<vtkTransform>::New();
+    m_firstTransform->RotateZ(10);
+
     resize(1200, 600);
-    initialize();
+    SetRenderWindow(m_renderWindow);
+
     setUpImages();
 }
 
@@ -73,40 +78,51 @@ void VTKOpenGLWidget::initialize()
 {
     // auto style = SliceViewerInteractorStyle::New();
     // style->SetInteractor(interactor);
-    vtkSmartPointer<vtkNrrdReader> firstReader
-        = vtkSmartPointer<vtkNrrdReader>::New();
-    firstReader->SetFileName("D:/MRI.nrrd");
+    // m_renderWindow->AddRenderer(m_leftRenderer);
+    // m_leftRenderer->SetBackground(0.5, 0.5, 0.5);
+    // m_leftRenderer->SetViewport(0, 0, 0.5, 1);
 
-    // auto firstCast = vtkSmartPointer<vtkImageCast>::New();
-    // firstCast->SetInputConnection(firstReader->GetOutputPort());
-    // firstCast->SetOutputScalarTypeToChar();
-    // firstCast->ClampOverflowOn();
-    // firstCast->Update();
-    firstReader->Update();
-    auto firstCenter = firstReader->GetOutput()->GetCenter();
+    // m_renderWindow->AddRenderer(m_rightRenderer);
+    // m_rightRenderer->SetBackground(0, 1.0, 0);
+    // m_rightRenderer->SetViewport(0.5, 0, 1, 1);
+    // SetRenderWindow(m_renderWindow);
+}
+
+void VTKOpenGLWidget::setUpImages()
+{
+    createViewForOneImage(0.5, 1, "D:/MRI.nrrd");
+}
+
+std::vector<vtkSmartPointer<vtkRenderer>>
+VTKOpenGLWidget::createViewForOneImage(double ymin, double ymax, char* fileName)
+{
+    std::vector<vtkSmartPointer<vtkRenderer>> renderers;
+    vtkSmartPointer<vtkNrrdReader> reader
+        = vtkSmartPointer<vtkNrrdReader>::New();
+    reader->SetFileName(fileName);
+    reader->Update();
+    auto center = reader->GetOutput()->GetCenter();
 
     for (int i = 0; i < 3; i++)
     {
         double color[] = { 0, 0, 0 };
         color[i] = 1;
-        m_firstRenderer.push_back(vtkSmartPointer<vtkRenderer>::New());
-        m_firstRenderer[i]->SetBackground(color);
+        renderers.push_back(vtkSmartPointer<vtkRenderer>::New());
+        renderers[i]->SetBackground(color);
 
         vtkSmartPointer<vtkImageResliceMapper> imageResliceMapper
             = vtkSmartPointer<vtkImageResliceMapper>::New();
-        // imageResliceMapper->SetInputConnection(firstCast->GetOutputPort());
-        imageResliceMapper->SetInputConnection(firstReader->GetOutputPort());
+        imageResliceMapper->SetInputConnection(reader->GetOutputPort());
 
         vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
-        plane->SetOrigin(firstCenter);
+        plane->SetOrigin(center);
         plane->SetNormal(m_normals.at(i).data());
         imageResliceMapper->SetSlicePlane(plane);
 
         vtkSmartPointer<vtkImageSlice> imageSlice
             = vtkSmartPointer<vtkImageSlice>::New();
         auto lookUpTable = vtkSmartPointer<vtkLookupTable>::New();
-        // lookUpTable->SetRange(firstCast->GetOutput()->GetScalarRange());
-        lookUpTable->SetRange(firstReader->GetOutput()->GetScalarRange());
+        lookUpTable->SetRange(reader->GetOutput()->GetScalarRange());
         lookUpTable->SetValueRange(0.0, 1.0);
         lookUpTable->SetSaturationRange(0.0, 0.0);
         lookUpTable->SetRampToLinear();
@@ -119,29 +135,25 @@ void VTKOpenGLWidget::initialize()
         imageSlice->SetUserTransform(m_firstTransform);
 
         imageSlice->SetMapper(imageResliceMapper);
-        m_firstRenderer[i]->AddActor(imageSlice);
-        m_renderWindow->AddRenderer(m_firstRenderer[i]);
+        renderers[i]->AddActor(imageSlice);
+        m_renderWindow->AddRenderer(renderers[i]);
+
+        renderers[i]->SetViewport(i * 0.33, ymin, (i + 1) * 0.33, ymax);
     }
+    renderers[0]->GetActiveCamera()->Roll(180);
+    renderers[0]->GetActiveCamera()->Azimuth(180);
+    renderers[1]->GetActiveCamera()->Pitch(90);
+    renderers[2]->GetActiveCamera()->Yaw(-90);
+    renderers[2]->GetActiveCamera()->Roll(180);
 
-    m_firstRenderer[0]->SetViewport(0, 0.5, 0.33, 1);
-    m_firstRenderer[1]->SetViewport(0.33, 0.5, 0.66, 1);
-    m_firstRenderer[2]->SetViewport(0.66, 0.5, 1, 1);
-    // m_renderWindow->AddRenderer(m_leftRenderer);
-    // m_leftRenderer->SetBackground(0.5, 0.5, 0.5);
-    // m_leftRenderer->SetViewport(0, 0, 0.5, 1);
-
-    // m_renderWindow->AddRenderer(m_rightRenderer);
-    // m_rightRenderer->SetBackground(0, 1.0, 0);
-    // m_rightRenderer->SetViewport(0.5, 0, 1, 1);
-    SetRenderWindow(m_renderWindow);
+    for (auto renderer : renderers)
+    {
+        renderer->GetActiveCamera()->OrthogonalizeViewUp();
+        renderer->GetActiveCamera()->ParallelProjectionOn();
+        renderer->ResetCamera();
+    }
+    return renderers;
 }
-
-void VTKOpenGLWidget::setUpImages()
-{
-    // createFirsImageRenderData();
-    // createSecondImageRenderData();
-}
-
 void VTKOpenGLWidget::createFirsImageRenderData()
 {
     vtkNew<vtkNrrdReader> reader;
