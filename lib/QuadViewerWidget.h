@@ -55,7 +55,7 @@ public:
     QuadViewerWidget(QWidget* parent = nullptr,
         const QString& coordinateId = QString());
     ~QuadViewerWidget();
-    void resetCamera();
+    // void resetCamera();
     void resetCamera(double bounds[6]);
     void createSlicerViewerWidgets();
     void deleteSlicerViewerWidgets();
@@ -123,7 +123,7 @@ public slots:
     void mouseMove(QString viewerLabel, const unit::Point& coord);
     // void deleteVolumeWidgets(bool isAll, MeasurementType measurementType,
     //     int subIndex);
-    void reviewMaximizeStereoViewer(const bool& toBeMaximized);
+    // void reviewMaximizeStereoViewer(const bool& toBeMaximized);
 private slots:
     void resizeChild(BaseViewer* viewer);
 

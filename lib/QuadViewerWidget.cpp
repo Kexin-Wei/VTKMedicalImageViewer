@@ -59,17 +59,17 @@ QuadViewerWidget::QuadViewerWidget(QWidget* parent,
     m_viewerManager->registerViewer(m_sagittalViewer);
     m_viewerManager->registerViewer(m_stereoViewer);
     // m_viewerManager->registerViewer(m_flexibleSliceViewer);
-    m_viewerManager->resetCamera();
+    // m_viewerManager->resetCamera();
 }
 
 QuadViewerWidget::~QuadViewerWidget()
 {
 }
 
-void QuadViewerWidget::resetCamera()
-{
-    m_viewerManager->resetCamera();
-}
+// void QuadViewerWidget::resetCamera()
+// {
+//     // m_viewerManager->resetCamera();
+// }
 
 void QuadViewerWidget::resetCamera(double bounds[6])
 {
@@ -168,6 +168,18 @@ void QuadViewerWidget::setStereoViewerVisible(const bool& isVisible)
 void QuadViewerWidget::addData(Data3d& data)
 {
     m_viewerManager->addData(data);
+    double dataBounds[6];
+    data.getBounds(dataBounds);
+    for (int i = 0; i < 6; ++i)
+    {
+        if (i % 2 == 0)
+            m_allDataBounds[i] = std::min(m_allDataBounds[i], dataBounds[i]);
+        else
+            m_allDataBounds[i] = std::max(m_allDataBounds[i], dataBounds[i]);
+    }
+    for (int i = 0; i < m_sliceViewers.size(); ++i)
+        m_sliceViewers[i]->setAllDataBounds(m_allDataBounds);
+    render();
 }
 
 void QuadViewerWidget::removeData(Data3d& data)
@@ -348,7 +360,6 @@ void QuadViewerWidget::updateAllDataBounds()
     // for (int i = 0; i < m_sliceViewers.size(); ++i)
     //     m_sliceViewers[i]->setAllDataBounds(m_allDataBounds);
     // render();
-    //TODO:
 }
 
 void QuadViewerWidget::zoomIn()
@@ -614,8 +625,10 @@ void QuadViewerWidget::setViewerLayout(const ViewerLayout& layout)
 {
     int screenWidth = QGuiApplication::primaryScreen()->virtualSize().width();
     int screenHeight = QGuiApplication::primaryScreen()->virtualSize().height();
-    int topHeight = screenHeight * 2 / 3;
-    int lowHeight = screenHeight - topHeight;
+    // int topHeight = screenHeight * 2 / 3;
+    // int lowHeight = screenHeight - topHeight;
+    int topHeight = screenHeight / 2;
+    int lowHeight = screenHeight / 2;
     if (layout != ViewerLayout::REGISTRATION)
     {
         m_stereoViewer->show();
@@ -745,32 +758,31 @@ void QuadViewerWidget::mouseMove(QString viewerLabel, const unit::Point& coord)
 // }
 // }
 
-void QuadViewerWidget::reviewMaximizeStereoViewer(const bool& toBeMaximized)
-{
-    if (toBeMaximized)
-    {
-        m_stereoViewerOldViewAngle = m_stereoViewer->getViewAngle();
-        m_stereoViewerOldVisibility = m_stereoViewer->isVisible();
-        if (!m_stereoViewerOldVisibility)
-            m_stereoViewer->show();
-        // if (!m_stereoViewer->IsMaximized())
-        //     m_stereoViewer->resizeSelf();
-        m_stereoViewer->setViewAngle(STEREOVIEWER_DEFAULT_VIEW_ANGLE / 4);
-        //ToDo:: remove this after the side by side view is fixed
-        m_stereoViewer->setVtkResizeButtonEnable(m_stereoViewer->getRenderer(),
-            false);
-    }
-    else
-    {
-        // if (m_stereoViewer->IsMaximized())
-        //     m_stereoViewer->resizeSelf();
-        if (!m_stereoViewerOldVisibility)
-            m_stereoViewer->hide();
-        m_stereoViewer->setViewAngle(m_stereoViewerOldViewAngle);
-        m_stereoViewer->setVtkResizeButtonEnable(m_stereoViewer->getRenderer(),
-            true);
-    }
-}
-
+// void QuadViewerWidget::reviewMaximizeStereoViewer(const bool& toBeMaximized)
+// {
+//     if (toBeMaximized)
+//     {
+//         m_stereoViewerOldViewAngle = m_stereoViewer->getViewAngle();
+//         m_stereoViewerOldVisibility = m_stereoViewer->isVisible();
+//         if (!m_stereoViewerOldVisibility)
+//             m_stereoViewer->show();
+//         // if (!m_stereoViewer->IsMaximized())
+//         //     m_stereoViewer->resizeSelf();
+//         m_stereoViewer->setViewAngle(STEREOVIEWER_DEFAULT_VIEW_ANGLE / 4);
+//         //ToDo:: remove this after the side by side view is fixed
+//         m_stereoViewer->setVtkResizeButtonEnable(m_stereoViewer->getRenderer(),
+//             false);
+//     }
+//     else
+//     {
+//         // if (m_stereoViewer->IsMaximized())
+//         //     m_stereoViewer->resizeSelf();
+//         if (!m_stereoViewerOldVisibility)
+//             m_stereoViewer->hide();
+//         m_stereoViewer->setViewAngle(m_stereoViewerOldViewAngle);
+//         m_stereoViewer->setVtkResizeButtonEnable(m_stereoViewer->getRenderer(),
+//             true);
+//     }
+// }
 }
 }

@@ -35,6 +35,14 @@ find_package(ITK REQUIRED COMPONENTS
         ITKIOImageBase
         ITKIOJPEG
         ITKIOGDCM
+        ITKImageIntensity
+        ITKVTK
+        ITKVtkGlue
+        ITKIONRRD
+        ITKIONIFTI
+        ITKIOMINC
+        ITKIOMeta
+        ITKIOGDCM
 )
 INCLUDE(${ITK_USE_FILE})
 
@@ -81,6 +89,7 @@ set(QT_LIBRARIES
 set(OTHER_LIBRARIES
         ${VTK_LIBRARIES}
         ${QT_LIBRARIES}
+        ${ITK_LIBRARIES}
 )
 
 add_library(${LIBARY_TARGET_NAME} STATIC

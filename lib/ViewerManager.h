@@ -46,7 +46,7 @@ public:
     void registerViewer(BaseViewer* viewer);
     void setCrosshairCoordinate(const unit::Point& coord);
     const unit::Point getCrosshairCoordinate();
-    void resetCamera();
+    // void resetCamera();
     void resetCamera(double bounds[6]);
     void render();
     // void filterOutVolumeImageById(const std::vector<int>& idList);
@@ -69,7 +69,7 @@ public slots:
     void coordinateChangedHandler(const unit::Point& coord);
 
 private:
-    void setPreviousCoordinateToDefault();
+    // void setPreviousCoordinateToDefault();
 
     std::vector<BaseViewer*> m_viewers;
     unit::Point m_previousCoordinate;

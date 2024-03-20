@@ -3,7 +3,6 @@
 #include "vtkAutoInit.h"
 #include "vtkColorSeries.h"
 
-#include <Data3d.h>
 #include <itkImage.h>
 #include <vtkAssembly.h>
 #include <vtkCutter.h>
@@ -18,6 +17,8 @@
 #include <vtkProperty.h>
 #include <vtkTransformFilter.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2)
+
+#include "Data3d.h"
 
 class vtkBox;
 class vtkImplicitBoolean;

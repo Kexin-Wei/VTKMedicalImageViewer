@@ -57,7 +57,7 @@ public:
     virtual void removeTextActor(Data3d& data);
     // void addVtkResizeButton(vtkRenderer* renderer,
     //     vtkRenderWindowInteractor* it);
-    void setVtkResizeButtonEnable(vtkRenderer* renderer, bool visible);
+    // void setVtkResizeButtonEnable(vtkRenderer* renderer, bool visible);
     void addQResizeButton(QWidget* parent);
     void resizeEvent(QResizeEvent* event);
     virtual void addVolumeImage(VolumeImage& volumeImage) {};
@@ -81,7 +81,7 @@ public slots:
     // virtual void resizeSelf();
     virtual void onResizeButtonClicked();
     virtual void render() {};
-    virtual void resetCamera() {};
+    // virtual void resetCamera() {};
     virtual void resetCamera(double bounds[6]) {};
 
 protected: //variables

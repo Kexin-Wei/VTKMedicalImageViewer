@@ -18,7 +18,7 @@ ViewerManager::ViewerManager(QObject* parent) :
     QObject(parent)
 // m_dataManager(DataManager::getInstance())
 {
-    this->setPreviousCoordinateToDefault();
+    // this->setPreviousCoordinateToDefault();
     // connect(this, &ViewerManager::coordinateChanged,
     //     m_dataManager->getMeasurementManager(),
     //     &MeasurementManager3D::checkMeasurementVisibility);
@@ -51,14 +51,14 @@ const unit::Point ViewerManager::getCrosshairCoordinate()
     return m_previousCoordinate;
 }
 
-void ViewerManager::resetCamera()
-{
-    for (auto& baseViewer : m_viewers)
-    {
-        baseViewer->resetCamera();
-    }
-    setPreviousCoordinateToDefault();
-}
+// void ViewerManager::resetCamera()
+// {
+//     for (auto& baseViewer : m_viewers)
+//     {
+//         baseViewer->resetCamera();
+//     }
+//     // setPreviousCoordinateToDefault();
+// }
 
 void ViewerManager::resetCamera(double bounds[6])
 {

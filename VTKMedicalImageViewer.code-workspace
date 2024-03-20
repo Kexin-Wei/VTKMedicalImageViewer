@@ -15,7 +15,8 @@
 			"map": "cpp",
 			"string": "cpp",
 			"qdebug": "cpp",
-			"qtimer": "cpp"
+			"qtimer": "cpp",
+			"algorithm": "cpp"
 		}
 	}
 }
