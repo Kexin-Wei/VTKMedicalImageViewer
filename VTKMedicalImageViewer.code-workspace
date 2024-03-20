@@ -10,6 +10,12 @@
 			"-Dlibs_DIR=D:/UltrastRepos/libs"
 		],
 		"C_Cpp.clang_format_fallbackStyle": "LLVM",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": true,
+		"files.associations": {
+			"map": "cpp",
+			"string": "cpp",
+			"qdebug": "cpp",
+			"qtimer": "cpp"
+		}
 	}
 }

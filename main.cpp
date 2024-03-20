@@ -9,20 +9,22 @@
 #include <vtkSmartPointer.h>
 
 // #include <src/QuadQtVTKRenderWidget.h>
-#include <src/VTKOpenGLWidget.h>
+// #include <src/VTKOpenGLWidget.h>
 // #include "QVTKOpenGLNativeWidget.h"
+#include <lib/QuadViewerWidget.h>
 
 int main(int argc, char* argv[])
 {
-    QSurfaceFormat::setDefaultFormat(VTKOpenGLWidget::defaultFormat());
+    // QSurfaceFormat::setDefaultFormat(VTKOpenGLWidget::defaultFormat());
 
     QApplication app(argc, argv);
     // QMainWindow w;
     // QuadQtVTKRenderWidget* renderWidget = new QuadQtVTKRenderWidget(&w);
     // w.setCentralWidget(renderWidget);
     // w.show();
-    VTKOpenGLWidget widget;
-    widget.show();
+    // VTKOpenGLWidget widget;
+    // widget.show();
 
+    QVTKOpenGLNativeWidget widget;
     return app.exec();
 }

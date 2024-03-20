@@ -22,7 +22,7 @@ IF (MSVC)
 ENDIF ()
 
 
-add_subdirectory(src)
+add_subdirectory(lib)
 
 find_package(Qt5 REQUIRED COMPONENTS
         Core
@@ -45,11 +45,9 @@ target_link_libraries(${PROJECT_NAME}
 # GET_FILENAME_COMPONENT(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 # FIND_PROGRAM(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
-# if (MSVC)
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E
-#         env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
-#         --verbose 0
-#         --dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" $<TARGET_FILE:${PROJECT_NAME}>
-# )
-# endif ()
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E
+        env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+        --verbose 0
+        --dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" $<TARGET_FILE:${PROJECT_NAME}>
+)
