@@ -82,13 +82,13 @@ public:
 
     vtkCamera* getCamera();
     void setCamera(vtkCamera* camera);
-
+    void setFocalPoint(unit::Point focalPoint);
 signals:
     void coordinateChanged(const unit::Point& coord);
     void zoomChanged();
 public slots:
     void render() override;
-    // void resetCamera() override;
+    void resetCamera() override;
     void resetCamera(double bounds[6]);
     void storeCoordinate(const unit::Point& coord);
     void zoomIn(double scale = 0);
@@ -112,6 +112,7 @@ private:
     unit::Point m_currentCoord;
     bool startMeasure;
     double m_scaleFactor;
+    unit::Point m_focalPoint;
 };
 
 } // namespace visualization

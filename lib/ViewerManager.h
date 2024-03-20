@@ -46,13 +46,15 @@ public:
     void registerViewer(BaseViewer* viewer);
     void setCrosshairCoordinate(const unit::Point& coord);
     const unit::Point getCrosshairCoordinate();
-    // void resetCamera();
+    void setFocalPoint(const unit::Point& coord);
+    void resetCamera();
     void resetCamera(double bounds[6]);
     void render();
     // void filterOutVolumeImageById(const std::vector<int>& idList);
     // void resetVolumeImageFilters();
     void addData(Data3d& data);
     void removeData(Data3d& data);
+    void setAllDataBounds(double* bounds);
 signals:
     void coordinateChanged(const unit::Point& coord);
     void leftButtonDown(const unit::Point& coord);

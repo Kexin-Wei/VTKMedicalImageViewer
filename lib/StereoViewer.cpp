@@ -198,23 +198,26 @@ void StereoViewer::setViewAngle(double angle)
     m_renderer->GetActiveCamera()->SetViewAngle(angle);
 }
 
-// void StereoViewer::resetCamera()
-// {
-//     m_renderer->GetActiveCamera()->SetViewUp(0, -1, 0);
-//     m_renderer->GetActiveCamera()->SetPosition(0, 0, -800);
-//     std::vector<double> focals
-//         = VolumeImageManager::getInstance()->getResetCameraFocalPoint();
-//     m_renderer->GetActiveCamera()->SetFocalPoint(focals[0], focals[1],
-//         focals[2]);
-//     m_renderer->GetActiveCamera()->SetViewAngle(
-//         STEREOVIEWER_DEFAULT_VIEW_ANGLE);
-//     m_renderer->GetActiveCamera()->Azimuth(-15);
-//     render();
-// }
+void StereoViewer::setFocalPoint(unit::Point focalPoint)
+{
+    m_focalPoint = focalPoint;
+}
+void StereoViewer::resetCamera()
+{
+    m_renderer->GetActiveCamera()->SetViewUp(0, -1, 0);
+    m_renderer->GetActiveCamera()->SetPosition(0, 0, -800);
+
+    m_renderer->GetActiveCamera()->SetFocalPoint(m_focalPoint[0],
+        m_focalPoint[1], m_focalPoint[2]);
+    m_renderer->GetActiveCamera()->SetViewAngle(
+        STEREOVIEWER_DEFAULT_VIEW_ANGLE);
+    m_renderer->GetActiveCamera()->Azimuth(-15);
+    render();
+}
 
 void StereoViewer::resetCamera(double bounds[6])
 {
-    // resetCamera();
+    resetCamera();
 }
 
 void StereoViewer::storeCoordinate(const unit::Point& coord)

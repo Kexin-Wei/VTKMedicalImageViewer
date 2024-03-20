@@ -329,51 +329,42 @@ void SliceViewer::render()
     }
 }
 
-// void SliceViewer::resetCamera()
-// {
-//     double focalPoint[3], defaultCrosshairLength[3];
-//     std::vector<double> focals
-//         = VolumeImageManager::getInstance()->getResetCameraFocalPoint();
-//     focalPoint[0] = focals[0];
-//     focalPoint[1] = focals[1];
-//     focalPoint[2] = focals[2];
+void SliceViewer::setFocalPoint(unit::Point focalPoint)
+{
+    m_focalPoint = focalPoint;
+}
 
-//     defaultCrosshairLength[0] = Setting::getSystemSetting().getDouble(
-//         "viewer.defaultCrosshairLengthX");
-//     defaultCrosshairLength[1] = Setting::getSystemSetting().getDouble(
-//         "viewer.defaultCrosshairLengthY");
-//     defaultCrosshairLength[2] = Setting::getSystemSetting().getDouble(
-//         "viewer.defaultCrosshairLengthZ");
-
-//     double half_length[3] = { defaultCrosshairLength[0] / 2.0,
-//         defaultCrosshairLength[1] / 2.0, defaultCrosshairLength[2] / 2.0 };
-//     double bounds[6] = {
-//         focalPoint[0] - half_length[0],
-//         focalPoint[0] + half_length[0],
-//         focalPoint[1] - half_length[1],
-//         focalPoint[1] + half_length[1],
-//         focalPoint[2] - half_length[2],
-//         focalPoint[2] + half_length[2],
-//     };
-//     m_renderer->ResetCamera(bounds);
-//     m_renderer->GetActiveCamera()->SetViewUp(m_defaultCameraViewUp);
-//     // calculations for parallel scale to control zoom level
-//     // adapted from https://github.com/Kitware/paraview-glance/issues/230
-//     double height
-//         = (bounds[(m_verticalAxis * 2) + 1] - bounds[m_verticalAxis * 2]) / 2;
-//     double width
-//         = (bounds[(m_horizontalAxis * 2) + 1] - bounds[m_horizontalAxis * 2])
-//         / 2;
-//     double windowWidth = this->width();
-//     double windowHeight = this->height();
-//     double ratio = windowWidth / windowHeight;
-//     if (ratio >= width / height)
-//         m_renderer->GetActiveCamera()->SetParallelScale(height + 2);
-//     else
-//         m_renderer->GetActiveCamera()->SetParallelScale(width / ratio + 2);
-
-//     setCrosshairCoordinate(focalPoint);
-// }
+void SliceViewer::resetCamera()
+{
+    double defaultCrosshairLength[] = { 100, 120, 100 };
+    double half_length[3] = { defaultCrosshairLength[0] / 2.0,
+        defaultCrosshairLength[1] / 2.0, defaultCrosshairLength[2] / 2.0 };
+    double bounds[6] = {
+        m_focalPoint[0] - half_length[0],
+        m_focalPoint[0] + half_length[0],
+        m_focalPoint[1] - half_length[1],
+        m_focalPoint[1] + half_length[1],
+        m_focalPoint[2] - half_length[2],
+        m_focalPoint[2] + half_length[2],
+    };
+    m_renderer->ResetCamera(bounds);
+    m_renderer->GetActiveCamera()->SetViewUp(m_defaultCameraViewUp);
+    // calculations for parallel scale to control zoom level
+    // adapted from https://github.com/Kitware/paraview-glance/issues/230
+    double height
+        = (bounds[(m_verticalAxis * 2) + 1] - bounds[m_verticalAxis * 2]) / 2;
+    double width
+        = (bounds[(m_horizontalAxis * 2) + 1] - bounds[m_horizontalAxis * 2])
+        / 2;
+    double windowWidth = this->width();
+    double windowHeight = this->height();
+    double ratio = windowWidth / windowHeight;
+    if (ratio >= width / height)
+        m_renderer->GetActiveCamera()->SetParallelScale(height + 2);
+    else
+        m_renderer->GetActiveCamera()->SetParallelScale(width / ratio + 2);
+    setCrosshairCoordinate(m_focalPoint);
+}
 
 void SliceViewer::resetCamera(double bounds[6])
 {

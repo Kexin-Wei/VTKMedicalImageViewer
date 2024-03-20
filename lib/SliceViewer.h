@@ -135,6 +135,7 @@ public:
     vtkRenderWindowInteractor* getInteractor() { return m_it.Get(); }
     vtkRenderer* getRenderer() { return m_renderer.Get(); }
     QString getOrientationAsQString() const;
+    void setFocalPoint(unit::Point focalPoint);
 
 signals:
     //only from user interaction with viewer by mouse
@@ -167,7 +168,7 @@ public slots:
     *
     * crosshair is set to the default defined values and camera is moved to motion space area
     **/
-    // void resetCamera() override;
+    void resetCamera() override;
     void resetCamera(double bounds[6]) override;
     /** Centers camera to center of all data bounds
     *
@@ -281,6 +282,7 @@ private:
     QString m_lowerLeftLabel;
     QMap<int, vtkSmartPointer<vtkBillboardTextActor3D>>
         m_markerPointLabelTextMap; //TODO this variable will be removed after optimizing marker class
+    unit::Point m_focalPoint;
 };
 
 } // namespace visualization

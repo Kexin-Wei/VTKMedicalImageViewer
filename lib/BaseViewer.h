@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VisualizationDataType.h"
+#include "unit.h"
 
 #include <QFrame>
 #include <QIcon>
@@ -32,6 +33,7 @@ using Model = ultrast::infrastructure::utility::Model;
 using MarkerPoint = ultrast::infrastructure::utility::MarkerPoint;
 using ViewerType = ultrast::infrastructure::utility::ViewerType;
 using ViewerInfo = ultrast::infrastructure::utility::ViewerInfo;
+namespace unit = ultrast::infrastructure::utility::unit;
 
 namespace ultrast {
 namespace visualization {
@@ -72,6 +74,7 @@ public:
     // virtual void removeImage2d(Image2d& image2d) {};
     virtual void bindViewerManager(ViewerManager* viewerManager) = 0;
     bool IsMaximized();
+    virtual void setFocalPoint(unit::Point coord) {};
 signals:
     void resizeSplitter(BaseViewer* viewer);
     void onFrameResize();
@@ -81,7 +84,7 @@ public slots:
     // virtual void resizeSelf();
     virtual void onResizeButtonClicked();
     virtual void render() {};
-    // virtual void resetCamera() {};
+    virtual void resetCamera() {};
     virtual void resetCamera(double bounds[6]) {};
 
 protected: //variables

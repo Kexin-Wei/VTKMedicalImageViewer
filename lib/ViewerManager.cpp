@@ -1,6 +1,7 @@
 #include "ViewerManager.h"
 #include "BaseOverlayButton.h"
 #include "BaseViewer.h"
+#include "SliceViewer.h"
 // #include "domain\data\DataManager.h"
 // #include <infrastructure\utility\Setting.h>
 // #include <infrastructure\utility\Logger.h>
@@ -51,14 +52,33 @@ const unit::Point ViewerManager::getCrosshairCoordinate()
     return m_previousCoordinate;
 }
 
-// void ViewerManager::resetCamera()
-// {
-//     for (auto& baseViewer : m_viewers)
-//     {
-//         baseViewer->resetCamera();
-//     }
-//     // setPreviousCoordinateToDefault();
-// }
+void ViewerManager::setFocalPoint(const unit::Point& coord)
+{
+    for (auto& baseViewer : m_viewers)
+    {
+        baseViewer->setFocalPoint(coord);
+    }
+}
+
+void ViewerManager::setAllDataBounds(double* bounds)
+{
+    for (auto& baseViewer : m_viewers)
+    {
+        if (baseViewer->getType() == ViewerType::SLICE)
+        {
+            ((SliceViewer*)baseViewer)->setAllDataBounds(bounds);
+        }
+    }
+}
+
+void ViewerManager::resetCamera()
+{
+    for (auto& baseViewer : m_viewers)
+    {
+        baseViewer->resetCamera();
+    }
+    // setPreviousCoordinateToDefault();
+}
 
 void ViewerManager::resetCamera(double bounds[6])
 {

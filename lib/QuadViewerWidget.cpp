@@ -66,10 +66,20 @@ QuadViewerWidget::~QuadViewerWidget()
 {
 }
 
-// void QuadViewerWidget::resetCamera()
-// {
-//     // m_viewerManager->resetCamera();
-// }
+void QuadViewerWidget::setFocalPoint(unit::Point point)
+{
+    m_viewerManager->setFocalPoint(point);
+}
+
+void QuadViewerWidget::setAllDataBounds(double* bounds)
+{
+    m_viewerManager->setAllDataBounds(bounds);
+}
+
+void QuadViewerWidget::resetCamera()
+{
+    m_viewerManager->resetCamera();
+}
 
 void QuadViewerWidget::resetCamera(double bounds[6])
 {

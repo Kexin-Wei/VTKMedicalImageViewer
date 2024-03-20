@@ -55,7 +55,7 @@ public:
     QuadViewerWidget(QWidget* parent = nullptr,
         const QString& coordinateId = QString());
     ~QuadViewerWidget();
-    // void resetCamera();
+    void resetCamera();
     void resetCamera(double bounds[6]);
     void createSlicerViewerWidgets();
     void deleteSlicerViewerWidgets();
@@ -93,6 +93,7 @@ public:
     void setStereoViewerCamera(vtkCamera* camera);
     QImage captureQuadViewerWidget();
     QImage captureIndividualViewer(QWidget* viewer);
+    void setAllDataBounds(double* bounds);
 
 signals:
     void resizeWidget(QWidget* widget, const bool& isMaxsized);
@@ -133,6 +134,7 @@ private:
     // void setAllDataBoundsToDefault();
     void setAllDataBoundsToSliceViewers();
     void setSplitterSize(QSplitter& splitter, const int maxSizeValue);
+    void setFocalPoint(unit::Point focalPoint);
 
     SliceViewer* m_axialViewer;
     SliceViewer* m_coronalViewer;
