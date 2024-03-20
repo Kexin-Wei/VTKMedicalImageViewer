@@ -85,7 +85,7 @@ public:
     void setFocalPoint(unit::Point focalPoint);
 signals:
     void coordinateChanged(const unit::Point& coord);
-    void zoomChanged();
+    void zoomChanged(const bool isZoomIn, double scale = 0);
 public slots:
     void render() override;
     void resetCamera() override;

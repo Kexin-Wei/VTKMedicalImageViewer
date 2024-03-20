@@ -516,6 +516,30 @@ void QuadViewerWidget::initializeUI()
     this->setLayout(layout);
 }
 
+void QuadViewerWidget::zoomSliceViewer(const double zoomFactor)
+{
+    for (auto viewer : m_sliceViewers)
+    {
+        if (viewer->isVisible())
+        {
+            viewer->zoomWithFactor(zoomFactor);
+        }
+    }
+    render();
+}
+
+void QuadViewerWidget::zoomStereoViewer(const bool isZoomIn)
+{
+    if (m_stereoViewer->isVisible())
+    {
+        if (isZoomIn)
+            m_stereoViewer->zoomIn();
+        else
+            m_stereoViewer->zoomOut();
+    }
+    render();
+}
+
 void QuadViewerWidget::bindConnections()
 {
     for (int i = 0; i < m_sliceViewers.size(); ++i)
@@ -527,11 +551,13 @@ void QuadViewerWidget::bindConnections()
         //     m_dataManager->getMeasurementManager(),
         //     &MeasurementManager3D::storeAngleWidget);
         connect(m_sliceViewers[i], &SliceViewer::zoomChanged, this,
-            &QuadViewerWidget::zoomChanged);
+            &QuadViewerWidget::sliceViewerZoomChanged);
+        connect(m_sliceViewers[i], &SliceViewer::zoomChanged, this,
+            &QuadViewerWidget::zoomSliceViewer);
     }
 
     connect(m_stereoViewer, &StereoViewer::zoomChanged, this,
-        &QuadViewerWidget::zoomChanged);
+        &QuadViewerWidget::stereoViewerZoomChanged);
 
     ////////////////////////3d measurement ////////////////////////////
     // m_3dVolumeMeasurer->setInteractor(m_axialViewer->getLabel(),

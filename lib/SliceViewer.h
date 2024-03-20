@@ -136,6 +136,7 @@ public:
     vtkRenderer* getRenderer() { return m_renderer.Get(); }
     QString getOrientationAsQString() const;
     void setFocalPoint(unit::Point focalPoint);
+    void zoomWithFactor(const double zoomFactor);
 
 signals:
     //only from user interaction with viewer by mouse
@@ -161,7 +162,8 @@ signals:
     void buttonModifyOrigin(VisualAxis axis, bool increase);
     void buttonModifyOrientation(VisualAxis axis, bool increase);
     void buttonModifySize(VisualAxis axis, bool increase);
-    void zoomChanged();
+    void zoomChanged(const double zoomFactor);
+
 public slots:
     void render() override;
     /** Resets camera to default crosshair position around defined motion space

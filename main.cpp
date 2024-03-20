@@ -117,21 +117,14 @@ int main(int argc, char* argv[])
         mriImage->setWorldTransform(preregistrationTransform);
     }
 
-    { // sync bounds
+    { // sync us and mri widget
         double usBounds[6];
         usImage->getBounds(usBounds);
-        double mriBounds[6];
-        mriImage->getBounds(mriBounds);
-        double bounds[6];
-        for (int i = 0; i < 6; ++i)
-        {
-            if (i % 2 == 0)
-                bounds[i] = std::min(usBounds[i], mriBounds[i]);
-            else
-                bounds[i] = std::max(usBounds[i], mriBounds[i]);
-        }
-        usWidget.setAllDataBounds(bounds);
-        mriWidget.setAllDataBounds(bounds);
+        // usWidget.setAllDataBounds(usBounds);
+        //TODO: focal point of MRI is not set correctly
+        unit::Point usCenter = usImage->getWorldRotationCenter();
+        mriWidget.setFocalPoint(usCenter);
+        mriWidget.setAllDataBounds(usBounds);
     }
 
     mriWidget.resetCamera();
@@ -140,6 +133,10 @@ int main(int argc, char* argv[])
         &mriWidget, &QuadViewerWidget::setCrosshairCoordinate);
     QObject::connect(&mriWidget, &QuadViewerWidget::coordinateChanged,
         &usWidget, &QuadViewerWidget::setCrosshairCoordinate);
+    QObject::connect(&usWidget, &QuadViewerWidget::sliceViewerZoomChanged,
+        &mriWidget, &QuadViewerWidget::zoomSliceViewer);
+    QObject::connect(&mriWidget, &QuadViewerWidget::sliceViewerZoomChanged,
+        &usWidget, &QuadViewerWidget::zoomSliceViewer);
 
     parent.show();
     return app.exec();

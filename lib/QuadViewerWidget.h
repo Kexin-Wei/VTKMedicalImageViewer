@@ -94,6 +94,7 @@ public:
     QImage captureQuadViewerWidget();
     QImage captureIndividualViewer(QWidget* viewer);
     void setAllDataBounds(double* bounds);
+    void setFocalPoint(unit::Point focalPoint);
 
 signals:
     void resizeWidget(QWidget* widget, const bool& isMaxsized);
@@ -106,7 +107,8 @@ signals:
     void rightButtonDown(const unit::Point& coord);
     void coordinateChanged(const unit::Point& coord);
     void robotPoseUpdate(unit::Pose pose);
-    void zoomChanged();
+    void sliceViewerZoomChanged(const double zoomFactor);
+    void stereoViewerZoomChanged(const bool isZoomIn);
     void stereoViewerVisible(bool visible);
     void stereoViewerResizeClicked();
 
@@ -115,6 +117,8 @@ public slots:
     void updateAllDataBounds();
     void zoomIn();
     void zoomOut();
+    void zoomSliceViewer(const double zoomFactor);
+    void zoomStereoViewer(const bool isZoomIn);
     void stereoZoomIn();
     void stereoZoomOut();
     void setViewerLayout(const ViewerLayout& layout);
@@ -134,7 +138,6 @@ private:
     // void setAllDataBoundsToDefault();
     void setAllDataBoundsToSliceViewers();
     void setSplitterSize(QSplitter& splitter, const int maxSizeValue);
-    void setFocalPoint(unit::Point focalPoint);
 
     SliceViewer* m_axialViewer;
     SliceViewer* m_coronalViewer;

@@ -1075,6 +1075,11 @@ QString SliceViewer::getLabel() const
     return m_lowerLeftLabel;
 }
 
+void SliceViewer::zoomWithFactor(const double zoomFactor)
+{
+    m_renderer->GetActiveCamera()->Zoom(zoomFactor);
+}
+
 SliceViewerInteractorStyle* SliceViewerInteractorStyle::New()
 {
     return new SliceViewerInteractorStyle();
@@ -1218,7 +1223,7 @@ void SliceViewerInteractorStyle::zoom(const bool& isIn)
 
     m_renderWindow->Render();
 
-    emit m_sliceViewer->zoomChanged();
+    emit m_sliceViewer->zoomChanged(zoomFactor);
 }
 
 SliceViewerInteractorStyle::SliceViewerInteractorStyle() :

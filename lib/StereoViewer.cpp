@@ -307,7 +307,7 @@ void StereoViewerInteractorStyle::zoom(const bool& isIn, double scale)
 
     m_stereoViewer->render();
 
-    emit m_stereoViewer->zoomChanged();
+    emit m_stereoViewer->zoomChanged(isIn, scale);
 }
 
 StereoViewerInteractorStyle::StereoViewerInteractorStyle() :
