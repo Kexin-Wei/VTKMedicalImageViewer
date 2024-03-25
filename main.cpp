@@ -117,6 +117,30 @@ int main(int argc, char* argv[])
         mriImage->setWorldTransform(preregistrationTransform);
     }
 
+    { // set up mri transform
+
+        qDebug() << "mriImage->getWorldTransform(): "
+                 << mriImage->getWorldTransform()->GetPosition()[0] << " "
+                 << mriImage->getWorldTransform()->GetPosition()[1] << " "
+                 << mriImage->getWorldTransform()->GetPosition()[2];
+        qDebug() << "mriImage->getWorldTransform(): "
+                 << mriImage->getWorldTransform()->GetOrientation()[0] << " "
+                 << mriImage->getWorldTransform()->GetOrientation()[1] << " "
+                 << mriImage->getWorldTransform()->GetOrientation()[2];
+        auto mriTransformTemp = vtkSmartPointer<vtkTransform>::New();
+        mriTransformTemp->Identity();
+        mriTransformTemp->PostMultiply();
+        mriTransformTemp->Translate(
+            mriImage->getWorldTransform()->GetPosition());
+        mriTransformTemp->RotateX(180);
+        mriTransformTemp->RotateY(-180);
+        mriTransformTemp->RotateZ(180);
+        auto mriTransform = vtkSmartPointer<vtkTransform>::New();
+        mriTransform->Identity();
+        mriTransform->SetMatrix(mriImage->getWorldTransform()->GetMatrix());
+        mriImage->setWorldTransform(mriTransformTemp);
+    }
+
     { // sync us and mri widget
         double usBounds[6];
         usImage->getBounds(usBounds);
